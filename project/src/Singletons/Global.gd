@@ -16,6 +16,7 @@ const MOUSE_ACCELERATION_Y := 10.0
 const MOUSE_Y_MAX := 70.0
 const MOUSE_Y_MIN := -60.0
 
+var _is_server := true
 var _rng : RandomNumberGenerator
 var _root_node : Node
 
@@ -24,7 +25,7 @@ enum Layers {
 	terrain,
 	item,
 	player,
-	enemy,
+	npc,
 	storage,
 	furniture,
 	building,
@@ -42,6 +43,13 @@ func _ready() -> void:
 func _input(event) -> void:
 	if Input.is_action_just_pressed("Quit"):
 		self.get_tree().quit()
+
+func rand_vector(min_val : float, max_val : float) -> Vector3:
+	return Vector3(
+		Global._rng.randf_range(min_val, max_val),
+		Global._rng.randf_range(min_val, max_val),
+		Global._rng.randf_range(min_val, max_val)
+	)
 
 func distance_between(v1 : Vector3, v2 : Vector3) -> float:
 	var dx := v1.x - v2.x

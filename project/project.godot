@@ -8,15 +8,26 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "KinematicBody",
+"class": "NPC",
+"language": "GDScript",
+"path": "res://src/NPC/NPC.gd"
+} ]
+_global_script_class_icons={
+"NPC": ""
+}
+
 [application]
 
 config/name="ExampleGodotMultiProcess"
-run/main_scene="res://src/World/World.tscn"
+run/main_scene="res://src/Start/Start.tscn"
 config/icon="res://icon.png"
 
 [autoload]
 
 Global="*res://src/Singletons/Global.gd"
+Server="*res://src/Singletons/Server.gd"
 
 [input]
 
@@ -56,7 +67,7 @@ Quit={
 3d_physics/layer_1="terrain"
 3d_physics/layer_2="item"
 3d_physics/layer_3="player"
-3d_physics/layer_4="enemy"
+3d_physics/layer_4="npc"
 3d_physics/layer_5="storage"
 3d_physics/layer_6="furniture"
 3d_physics/layer_7="building"
