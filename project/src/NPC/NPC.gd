@@ -17,6 +17,9 @@ var _snap_vector := Vector3.ZERO
 var _start_location := Vector3.ZERO
 var _destination := Vector3.INF
 
+func _ready() -> void:
+	_start_location = self.global_transform.origin
+
 func _process(_delta : float) -> void:
 	# Get a new destination if there is none
 	if _destination == Vector3.INF:
@@ -58,4 +61,22 @@ func _physics_process(delta : float) -> void:
 
 	# Actually move
 	_velocity = move_and_slide_with_snap(_velocity, _snap_vector, Vector3.UP, true, 4, Global.FLOOR_SLOPE_MAX_THRESHOLD, false)
-	
+
+func serialize(world_offset : Vector3) -> Dictionary:
+	var data = {
+		"scene_file" : "res://src/NPC/NPC.tscn",
+		"origin" : self.global_transform.origin - world_offset,
+		"_velocity" : _velocity,
+		"_snap_vector" : _snap_vector,
+		"_start_location" : _start_location - world_offset,
+		"_destination" : _destination - world_offset,
+	}
+	return data
+
+func deserialize(world_offset : Vector3, data : Dictionary) -> void:
+	self.global_transform.origin = data["origin"] + world_offset
+	_velocity = data["_velocity"]
+	_snap_vector = data["_snap_vector"]
+	_start_location = data["_start_location"] + world_offset
+	_destination = data["_destination"] + world_offset
+
