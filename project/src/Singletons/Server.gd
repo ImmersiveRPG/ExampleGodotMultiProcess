@@ -9,6 +9,11 @@ var ip = "127.0.0.1"
 var port = 1909
 var max_players = 100
 var _peer_zones := {}
+var _free_zones := [
+	Vector3(1000.0, 0.0, -1000.0),
+	Vector3(1000.0, 0.0, 0.0),
+	Vector3(0.0, 0.0, -1000.0)
+]
 
 
 func start_as_server() -> void:
@@ -35,7 +40,8 @@ func _on_connection_succeeded() -> void:
 
 func _on_peer_connected(peer_id : int) -> void:
 	print("Peer %s connected" % [peer_id])
-	set_peer_controlling_zone(Vector3(-1000.0, 0.0, 0.0), peer_id)
+	var next_zone = _free_zones.pop_front()
+	set_peer_controlling_zone(next_zone, peer_id)
 
 func _on_peer_disconnected(peer_id : int) -> void:
 	print("Peer %s disconnected" % [peer_id])
@@ -63,13 +69,14 @@ func set_peer_controlling_zone(peer_zone : Vector3, peer_id : int) -> void:
 
 remote func response_set_peer_controlling_zone(server_zone : Vector3, peer_zone : Vector3) -> void:
 	var peer_id : int = self.get_tree().get_rpc_sender_id()
-	#Global._root_node.global_transform.origin = remote_offset
+	Global._root_node.get_node("World").global_transform.origin = -peer_zone
+	print("peer_zone", peer_zone)
 
 	var world_offset = Global._root_node.global_transform.origin
-	var offset = server_zone - world_offset
+	var offset = peer_zone - server_zone
 
 	print("server_zone", offset)
-	var marker = Global._root_node.add_marker(server_zone, peer_id)
+	var marker = Global._root_node.add_marker(offset, peer_id)
 	_peer_zones[peer_id] = {
 		"pos" : offset,
 		"marker" : marker,
@@ -82,7 +89,7 @@ func transfer_to_peer(body : PhysicsBody, peer_id : int) -> void:
 	# Get the peer that controls this marker
 	if _peer_zones.has(peer_id):
 		var zone = _peer_zones[peer_id]
-		var world_offset = Global._root_node.global_transform.origin
+		var world_offset = Global._root_node.get_node("World").global_transform.origin
 		var serialized = body.serialize(world_offset)
 		rpc_id(peer_id, "response_transfer_to_peer", serialized)
 		body.queue_free()
@@ -90,13 +97,13 @@ func transfer_to_peer(body : PhysicsBody, peer_id : int) -> void:
 remote func response_transfer_to_peer(serialized : Dictionary) -> void:
 	print("Called response_transfer_to_peer %s " % [serialized])
 	# Get this world's offset
-	var world_offset = Global._root_node.global_transform.origin
+	var world_offset = Global._root_node.get_node("World").global_transform.origin
 
 	# Create the thing in this process
 	var scene_file = serialized["scene_file"]
 	var scene := ResourceLoader.load(scene_file)
 	var instance = scene.instance()
-	Global._root_node.add_child(instance)
+	Global._root_node.get_node("World").add_child(instance)
 	instance.deserialize(world_offset, serialized)
 
 

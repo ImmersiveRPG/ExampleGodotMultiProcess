@@ -10,25 +10,27 @@
 [node name="World" type="Spatial"]
 script = ExtResource( 1 )
 
-[node name="DirectionalLight" type="DirectionalLight" parent="."]
+[node name="World" type="Spatial" parent="."]
+
+[node name="DirectionalLight" type="DirectionalLight" parent="World"]
 transform = Transform( 0.965926, -0.12941, 0.224144, -0.258819, -0.482963, 0.836516, 0, -0.866025, -0.5, 207, 249, 0 )
 
-[node name="Camera" type="Camera" parent="."]
-transform = Transform( 1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 1000, -461.476 )
-projection = 1
-size = 2000.0
-far = 10000.0
-
-[node name="NPC" parent="." instance=ExtResource( 3 )]
+[node name="NPC" parent="World" instance=ExtResource( 3 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 458, 6, -446.933 )
 
-[node name="Floor" parent="." instance=ExtResource( 2 )]
+[node name="Floor" parent="World" instance=ExtResource( 2 )]
 
-[node name="Floor2" parent="." instance=ExtResource( 4 )]
+[node name="Floor2" parent="World" instance=ExtResource( 4 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1000, 0, 0 )
 
-[node name="Floor3" parent="." instance=ExtResource( 5 )]
+[node name="Floor3" parent="World" instance=ExtResource( 5 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1000 )
 
-[node name="Floor4" parent="." instance=ExtResource( 6 )]
+[node name="Floor4" parent="World" instance=ExtResource( 6 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1000, 0, -1000 )
+
+[node name="Camera" type="Camera" parent="."]
+transform = Transform( -1, 8.9407e-08, 3.9081e-15, 0, -4.37114e-08, 1, 8.9407e-08, 1, 4.37114e-08, 0, 1000, 0 )
+projection = 1
+size = 4000.0
+far = 10000.0
