@@ -3,7 +3,7 @@
 [ext_resource path="res://src/ZoneMarker/ZoneMarker.gd" type="Script" id=1]
 
 [sub_resource type="BoxShape" id=1]
-extents = Vector3( 500, 500, 500 )
+extents = Vector3( 475, 50, 475 )
 
 [sub_resource type="SpatialMaterial" id=3]
 flags_transparent = true
@@ -11,7 +11,7 @@ albedo_color = Color( 1, 0, 0, 0.231373 )
 
 [sub_resource type="CubeMesh" id=2]
 material = SubResource( 3 )
-size = Vector3( 1000, 1000, 1000 )
+size = Vector3( 950, 100, 950 )
 
 [node name="ZoneMarker" type="Area"]
 collision_layer = 2048
