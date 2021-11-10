@@ -48,7 +48,6 @@ func _on_peer_disconnected(peer_id : int) -> void:
 
 
 remote func request_set_controlling_pos(pos : Vector3, node_id : int) -> void:
-	print("request_set_controlling_pos")
 	var peer_id : int = self.get_tree().get_rpc_sender_id()
 	var marker = Global._root_node.add_marker(pos, peer_id)
 	_peer_zones[peer_id] = {
@@ -60,11 +59,9 @@ remote func request_set_controlling_pos(pos : Vector3, node_id : int) -> void:
 	rpc_id(peer_id, "response_set_controlling_pos", world_offset, node_id)
 
 remote func response_set_controlling_pos(remote_offset : Vector3, node_id : int) -> void:
-	print("response_set_controlling_pos")
 	var peer_id : int = self.get_tree().get_rpc_sender_id()
 
 	var world_offset = Global._root_node.global_transform.origin
-	print(world_offset, " ", remote_offset)
 	var offset = remote_offset - world_offset
 
 	var marker = Global._root_node.add_marker(offset, peer_id)
@@ -74,7 +71,6 @@ remote func response_set_controlling_pos(remote_offset : Vector3, node_id : int)
 	}
 
 func set_controlling_pos(pos : Vector3) -> void:
-	print("set_controlling_pos")
 	var node_id : int = self.get_instance_id()
 	rpc_id(1, "request_set_controlling_pos", pos, node_id)
 
@@ -82,14 +78,10 @@ func set_controlling_pos(pos : Vector3) -> void:
 
 func transfer_to_peer(body : PhysicsBody, peer_id : int):
 	# Get the peer that controls this marker
-	#print("body %s" % [body.name])
 	if _peer_zones.has(peer_id):
-		#print("    peer_id: %s" % [peer_id])
 		var zone = _peer_zones[peer_id]
-		#print("        peer_id: %s" % [peer_id])
 		var world_offset = Global._root_node.global_transform.origin
 		var serialized = body.serialize(world_offset)
-		#print("        calling response_transfer_to_peer peer_id:%s, serialized:%s" % [peer_id, serialized])
 		rpc_id(peer_id, "response_transfer_to_peer", serialized)
 		body.queue_free()
 
@@ -104,6 +96,5 @@ remote func response_transfer_to_peer(serialized : Dictionary) -> void:
 	var instance = scene.instance()
 	Global._root_node.add_child(instance)
 	instance.deserialize(world_offset, serialized)
-	#print(instance.name)
 
 

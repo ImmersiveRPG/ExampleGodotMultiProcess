@@ -28,7 +28,6 @@ func _process(_delta : float) -> void:
 
 	# When close to destination, get a new random one
 	var distance := Global.distance_between(self.global_transform.origin, _destination)
-	#print("Wandering distance: %s, %s" % [distance, _destination])
 	if distance <= 3.0:
 		_destination = _start_location + Global.rand_vector(-NPC_RANGE, NPC_RANGE)
 		_destination.y = 0.0

@@ -19,8 +19,6 @@ func add_marker(pos : Vector3, peer_id : int) -> Node:
 	var instance = scene.instance()
 	target.add_child(instance)
 	instance._peer_id = peer_id
-	#SceneLoader.load_scene_async(target, scene_file, offset_pos, true)
 	instance.global_transform.origin = offset_pos
-	print("Remote Godot instance controlling ", offset_pos)
 	return instance
 
