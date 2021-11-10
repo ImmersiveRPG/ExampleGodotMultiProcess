@@ -22,6 +22,7 @@ func start_as_server() -> void:
 func start_as_client() -> void:
 	_network.create_client(ip, port)
 	self.get_tree().set_network_peer(_network)
+	print("Client started on port %s" % [port])
 
 	_network.connect("connection_failed", self, "_on_connection_failed")
 	_network.connect("connection_succeeded", self, "_on_connection_succeeded")
@@ -34,6 +35,7 @@ func _on_connection_succeeded() -> void:
 
 func _on_peer_connected(peer_id : int) -> void:
 	print("Peer %s connected" % [peer_id])
+	set_peer_controlling_zone(Vector3(-1000.0, 0.0, 0.0), peer_id)
 
 func _on_peer_disconnected(peer_id : int) -> void:
 	print("Peer %s disconnected" % [peer_id])
@@ -47,36 +49,36 @@ func _on_peer_disconnected(peer_id : int) -> void:
 
 
 
-remote func request_set_controlling_pos(pos : Vector3, node_id : int) -> void:
-	var peer_id : int = self.get_tree().get_rpc_sender_id()
-	var marker = Global._root_node.add_marker(pos, peer_id)
+
+func set_peer_controlling_zone(peer_zone : Vector3, peer_id : int) -> void:
+	print("peer_zone", peer_zone)
+	var marker = Global._root_node.add_marker(peer_zone, peer_id)
 	_peer_zones[peer_id] = {
-		"pos" : pos,
+		"pos" : peer_zone,
 		"marker" : marker,
 	}
 
-	var world_offset = Global._root_node.global_transform.origin
-	rpc_id(peer_id, "response_set_controlling_pos", world_offset, node_id)
+	var server_zone := Vector3.ZERO
+	rpc_id(peer_id, "response_set_peer_controlling_zone", server_zone, peer_zone)
 
-remote func response_set_controlling_pos(remote_offset : Vector3, node_id : int) -> void:
+remote func response_set_peer_controlling_zone(server_zone : Vector3, peer_zone : Vector3) -> void:
 	var peer_id : int = self.get_tree().get_rpc_sender_id()
+	#Global._root_node.global_transform.origin = remote_offset
 
 	var world_offset = Global._root_node.global_transform.origin
-	var offset = remote_offset - world_offset
+	var offset = server_zone - world_offset
 
-	var marker = Global._root_node.add_marker(offset, peer_id)
+	print("server_zone", offset)
+	var marker = Global._root_node.add_marker(server_zone, peer_id)
 	_peer_zones[peer_id] = {
 		"pos" : offset,
 		"marker" : marker,
 	}
 
-func set_controlling_pos(pos : Vector3) -> void:
-	var node_id : int = self.get_instance_id()
-	rpc_id(1, "request_set_controlling_pos", pos, node_id)
 
 
 
-func transfer_to_peer(body : PhysicsBody, peer_id : int):
+func transfer_to_peer(body : PhysicsBody, peer_id : int) -> void:
 	# Get the peer that controls this marker
 	if _peer_zones.has(peer_id):
 		var zone = _peer_zones[peer_id]

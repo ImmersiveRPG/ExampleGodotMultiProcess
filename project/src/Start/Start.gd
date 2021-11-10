@@ -5,13 +5,7 @@
 extends Control
 
 
-func _ready() -> void:
-	Global._is_server = true
 
-	if Global._is_server:
-		Server.start_as_server()
-	else:
-		Server.start_as_client()
 
 func _on_server_pressed() -> void:
 	self.get_tree().change_scene("res://src/World/World.tscn")

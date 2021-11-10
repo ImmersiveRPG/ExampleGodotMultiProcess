@@ -16,7 +16,7 @@ const MOUSE_ACCELERATION_Y := 10.0
 const MOUSE_Y_MAX := 70.0
 const MOUSE_Y_MIN := -60.0
 
-var _is_server := true
+
 var _rng : RandomNumberGenerator
 var _root_node : Node
 

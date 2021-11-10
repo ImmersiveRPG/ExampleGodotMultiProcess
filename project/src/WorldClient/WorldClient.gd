@@ -7,8 +7,7 @@ extends Spatial
 
 func _ready() -> void:
 	Global._root_node = self
-	if not Global._is_server:
-		Server.set_controlling_pos(self.transform.origin)
+	Server.start_as_client()
 
 func add_marker(pos : Vector3, peer_id : int) -> Node:
 	var offset_pos = Vector3(-pos.x, -pos.y, -pos.z)
