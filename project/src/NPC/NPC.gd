@@ -1,5 +1,5 @@
 # Copyright (c) 2021 Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
-# This file is license under the MIT License
+# This file is licensed under the MIT License
 # https://github.com/ImmersiveRPG/ExampleGodotMultiProcess
 
 extends KinematicBody
@@ -78,4 +78,3 @@ func deserialize(world_offset : Vector3, data : Dictionary) -> void:
 	_snap_vector = data["_snap_vector"]
 	_start_location = data["_start_location"] + world_offset
 	_destination = data["_destination"] + world_offset
-
